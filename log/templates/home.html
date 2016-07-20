@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>Runners Log</title>
+    </head>
+    <body>
+        <h1>Enter a new training</h1>
+        <form method = "POST" action = "/">
+            <input id = "submit" type = "submit" value = "submit">
+            <input name = "item_distance" id = "id_new_distance" placeholder = "Distance" />
+            <input name = "item_executed_time" id = "id_new_executed_time" placeholder = "Executed Time" />
+            <input name = "item_in_zone" id = "id_new_in_zone" placeholder = "In Zone" />
+            <input name = "item_average_heart_rate" id = "id_new_average_heart_rate" placeholder = "Average Heart Rate" />
+            {% csrf_token %}
+        </form>
+        <table id = "id_training_table">
+            <tr>
+                <td>{{ training.distance }}</td>
+                <td>{{ training.executed_time }}</td>
+                <td>{{ training.in_zone }}</td>
+                <td>{{ training.average_heart_rate }}</td>
+            </tr>
+        </table>_
+    </body>
+</html>
