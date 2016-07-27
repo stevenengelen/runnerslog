@@ -45,14 +45,13 @@ class NewTrainingData(LiveServerTestCase) :
         submit_button.submit()
         
         # TODO : user sees he gets redirected to the same home url
-        # self.browser.get(self.live_server_url)
         table = self.browser.find_element_by_id('id_training_table')
         
         print(table.text)
 
         self.assertIn('9.0', table.text)
-        self.assertIn('00:46:48', table.text)
-        self.assertIn('00:38:42', table.text)
+        self.assertIn('0:46:48', table.text)
+        self.assertIn('0:38:42', table.text)
         self.assertIn('162', table.text)
 
         
