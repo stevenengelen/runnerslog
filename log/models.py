@@ -9,35 +9,19 @@ class Training(models.Model) :
     average_heart_rate = models.IntegerField()
 
     @property
-    def dist(self) :
-        return self.distance
-
-    @property
-    def et(self) :
+    def executed_time_(self) :
         return self.executed_time
 
     @property
-    def iz(self) :
+    def in_zone_(self) :
         return self.in_zone
 
-    @property
-    def ahr(self) :
-        return self.average_heart_rate
-
-    @dist.setter
-    def dist(self, value) :
-        self.distance = value
-
-    @et.setter
-    def et(self, value) :
+    @executed_time_.setter
+    def executed_time_(self, value) :
         [h, m, s] = value.split(':')
         self.executed_time =  timedelta(hours = int(h), minutes = int(m), seconds = int(s))
 
-    @iz.setter
-    def iz(self, value) :
+    @in_zone_.setter
+    def in_zone_(self, value) :
         [h, m, s] = value.split(':')
         self.in_zone = timedelta(hours = int(h), minutes = int(m), seconds = int(s))
-
-    @ahr.setter
-    def ahr(self, value) :
-        self.average_heart_rate = value

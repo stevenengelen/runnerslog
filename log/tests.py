@@ -22,19 +22,19 @@ class HomepageTest(TestCase) :
 class TrainingDataModelTest(TestCase) :
     def test_store_and_retrieve_training_data(self) :
         training = Training()
-        training.dist = 2.3
-        training.et = '00:12:05'
-        training.iz = '00:10:58'
-        training.ahr = 152
+        training.distance = 2.3
+        training.executed_time_ = '00:12:05'
+        training.in_zone_ = '00:10:58'
+        training.average_heart_rate = 152
         training.save()
 
         saved_training = Training.objects.all()
 
         self.assertEqual(saved_training.count(), 1)
-        self.assertEqual(saved_training[0].dist, 2.3)
-        self.assertEqual(saved_training[0].et, timedelta(hours = 0, minutes = 12, seconds = 5))
-        self.assertEqual(saved_training[0].iz, timedelta(hours = 0, minutes = 10, seconds = 58))
-        self.assertEqual(saved_training[0].ahr, 152)
+        self.assertEqual(saved_training[0].distance, 2.3)
+        self.assertEqual(saved_training[0].executed_time_, timedelta(hours = 0, minutes = 12, seconds = 5))
+        self.assertEqual(saved_training[0].in_zone_, timedelta(hours = 0, minutes = 10, seconds = 58))
+        self.assertEqual(saved_training[0].average_heart_rate, 152)
 
 class NewTrainingDataTest(TestCase) :
     def test_saves_a_POST_request(self) :
@@ -48,7 +48,7 @@ class NewTrainingDataTest(TestCase) :
         saved_training = Training.objects.all()
 
         self.assertEqual(saved_training.count(), 1)
-        self.assertEqual(saved_training[0].dist, 2.3)
-        self.assertEqual(saved_training[0].et, timedelta(hours = 0, minutes = 12, seconds = 5))
-        self.assertEqual(saved_training[0].iz, timedelta(hours = 0, minutes = 10, seconds = 58))
-        self.assertEqual(saved_training[0].ahr, 152)
+        self.assertEqual(saved_training[0].distance, 2.3)
+        self.assertEqual(saved_training[0].executed_time_, timedelta(hours = 0, minutes = 12, seconds = 5))
+        self.assertEqual(saved_training[0].in_zone_, timedelta(hours = 0, minutes = 10, seconds = 58))
+        self.assertEqual(saved_training[0].average_heart_rate, 152)
