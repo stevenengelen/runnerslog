@@ -37,6 +37,7 @@ class NewTrainingData(LiveServerTestCase) :
         submit_button = self.browser.find_element_by_id('submit')
         self.assertEqual(submit_button.get_attribute('value'), 'submit')
         # user enters data in the 4 fields an presses submit
+        # TODO : user sees he gets redirected to the same home url
         # user sees an entry in a table on the page with the entered data
         distance_editbox.send_keys('9')
         executed_time_editbox.send_keys('00:46:48')
@@ -44,9 +45,50 @@ class NewTrainingData(LiveServerTestCase) :
         average_heart_rate_editbox.send_keys('162')
         submit_button.submit()
         
-        # TODO : user sees he gets redirected to the same home url
         table = self.browser.find_element_by_id('id_training_table')
         
+        self.assertIn('9.0', table.text)
+        self.assertIn('0:46:48', table.text)
+        self.assertIn('0:38:42', table.text)
+        self.assertIn('162', table.text)
+
+        self.browser.get(self.live_server_url)
+        
+        # user sees 4 edit boxes to enter distance, executed time, in zone and average HR
+        distance_editbox = self.browser.find_element_by_id('id_new_distance')
+        self.assertEqual(distance_editbox.get_attribute('placeholder'), 'Distance')
+
+        executed_time_editbox = self.browser.find_element_by_id('id_new_executed_time')
+        self.assertEqual(executed_time_editbox.get_attribute('placeholder'), 'Executed Time')
+
+        in_zone_editbox = self.browser.find_element_by_id('id_new_in_zone')
+        self.assertEqual(in_zone_editbox.get_attribute('placeholder'), 'In Zone')
+
+        average_heart_rate_editbox = self.browser.find_element_by_id('id_new_average_heart_rate')
+        self.assertEqual(average_heart_rate_editbox.get_attribute('placeholder'), 'Average Heart Rate')
+
+        # TODO: user sees km, bpm, .... next to the edit boxes
+
+        # user sees a submit button
+        submit_button = self.browser.find_element_by_id('submit')
+        self.assertEqual(submit_button.get_attribute('value'), 'submit')
+
+        # user enters a second training session
+        distance_editbox.send_keys('14.182')
+        executed_time_editbox.send_keys('01:08:53')
+        in_zone_editbox.send_keys('00:52:23')
+        average_heart_rate_editbox.send_keys('159')
+        submit_button.submit()
+
+        # user sees a second row in the table on the page matching the data from the second training session
+        table = self.browser.find_element_by_id('id_training_table')
+        print(table.text)
+        self.assertIn('14.182', table.text)
+        self.assertIn('1:08:53', table.text)
+        self.assertIn('0:52:23', table.text)
+        self.assertIn('159', table.text)
+        
+        # user also sees the previously entered row
         self.assertIn('9.0', table.text)
         self.assertIn('0:46:48', table.text)
         self.assertIn('0:38:42', table.text)

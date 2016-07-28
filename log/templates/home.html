@@ -13,12 +13,14 @@
             {% csrf_token %}
         </form>
         <table id = "id_training_table">
+            {% for training in training_log %}
             <tr>
                 <td>{{ training.distance }}</td>
                 <td>{{ training.executed_time }}</td>
                 <td>{{ training.in_zone }}</td>
                 <td>{{ training.average_heart_rate }}</td>
             </tr>
+            {% endfor %}
         </table>_
     </body>
 </html>

@@ -15,6 +15,6 @@ def home_page(request) :
         
         training = Training.objects.all()
 
-        return render(request, 'home.html', { 'training' : training[0] })
+        return render(request, 'home.html', { 'training_log' : training })
 
     return render(request, 'home.html')
