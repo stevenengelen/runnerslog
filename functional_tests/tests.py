@@ -82,13 +82,29 @@ class NewTrainingData(LiveServerTestCase) :
 
         # user sees a second row in the table on the page matching the data from the second training session
         table = self.browser.find_element_by_id('id_training_table')
-        print(table.text)
         self.assertIn('14.182', table.text)
         self.assertIn('1:08:53', table.text)
         self.assertIn('0:52:23', table.text)
         self.assertIn('159', table.text)
         
         # user also sees the previously entered row
+        self.assertIn('9.0', table.text)
+        self.assertIn('0:46:48', table.text)
+        self.assertIn('0:38:42', table.text)
+        self.assertIn('162', table.text)
+
+    def test_display_data_over_sessions(self) :
+        # user closes the browser and reopens, to see his previously entered data
+        self.browser.quit()
+        self.browser = Firefox()
+        self.browser.get(self.live_server_url)
+        
+        table = self.browser.find_element_by_id('id_training_table')
+        self.assertIn('14.182', table.text)
+        self.assertIn('1:08:53', table.text)
+        self.assertIn('0:52:23', table.text)
+        self.assertIn('159', table.text)
+        
         self.assertIn('9.0', table.text)
         self.assertIn('0:46:48', table.text)
         self.assertIn('0:38:42', table.text)

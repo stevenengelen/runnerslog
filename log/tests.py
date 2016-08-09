@@ -95,3 +95,18 @@ class NewTrainingDataTest(TestCase) :
         self.assertEqual(saved_training[1].executed_time_, timedelta(hours = 1, minutes = 12, seconds = 5))
         self.assertEqual(saved_training[1].in_zone_, timedelta(hours = 1, minutes = 10, seconds = 58))
         self.assertEqual(saved_training[1].average_heart_rate, 142)
+
+    def test_reads_from_database_when_opening_home_page(self) :
+        request = HttpRequest()
+        response = home_page(request)
+        rendered_html = render_to_string('home.html')
+
+        print(rendered_html)
+
+        # find the occurences of <td>, divide them by 4 to get the number of rows, and that must be equal to the number of Training.objects.all()
+        number_of_saved_trainings = Training.objects.all().count()
+        number_of_rows_in_table = rendered_html.count('<td>') / 4
+
+        print(number_of_saved_trainings)
+        print(number_of_rows_in_table)
+        self.assertEqual(number_of_saved_trainings, 
