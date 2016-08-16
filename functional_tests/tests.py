@@ -93,7 +93,6 @@ class NewTrainingData(LiveServerTestCase) :
         self.assertIn('0:38:42', table.text)
         self.assertIn('162', table.text)
 
-    def test_display_data_over_sessions(self) :
         # user closes the browser and reopens, to see his previously entered data
         self.browser.quit()
         self.browser = Firefox()

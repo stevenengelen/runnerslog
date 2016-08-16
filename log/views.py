@@ -13,8 +13,5 @@ def home_page(request) :
         training.average_heart_rate = request.POST['item_average_heart_rate']
         training.save()
         
-        training = Training.objects.all()
-
-        return render(request, 'home.html', { 'training_log' : training })
-
-    return render(request, 'home.html')
+    training = Training.objects.all()
+    return render(request, 'home.html', { 'training_log' : training} )

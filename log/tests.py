@@ -107,16 +107,27 @@ class NewTrainingDataTest(TestCase) :
         assert_saved_training(self, 2, distance, executed_time, in_zone, average_heart_rate)
 
     def test_reads_from_database_when_opening_home_page(self) :
+        # first we save some data using a POST
+        distance = 2.3
+        executed_time = '00:12:05'
+        in_zone = '00:10:58'
+        average_heart_rate = 152
+        
+        self.client.post('/', data = {
+            'item_distance' : distance,
+            'item_executed_time' : executed_time,
+            'item_in_zone' : in_zone,
+            'item_average_heart_rate' : average_heart_rate,
+            })
+
+        # next we launch a new http request and check if the data saved is in the response
         request = HttpRequest()
         response = home_page(request)
-        rendered_html = render_to_string('home.html')
-
-        print(rendered_html)
+        response_text = response.content.decode('ascii')
 
         # find the occurences of <td>, divide them by 4 to get the number of rows, and that must be equal to the number of Training.objects.all()
         number_of_saved_trainings = Training.objects.all().count()
-        number_of_rows_in_table = rendered_html.count('<td>') / 4
+        number_of_rows_in_table = response_text.count('<td>') / 4
 
-        print(number_of_saved_trainings)
-        print(number_of_rows_in_table)
-        # self.assertEqual(number_of_saved_trainings, 
+        self.assertEqual(number_of_saved_trainings, 1)
+        self.assertEqual(number_of_rows_in_table, 1)
