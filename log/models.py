@@ -3,10 +3,12 @@ from datetime import timedelta
 
 # Create your models here.
 class Training(models.Model) :
-    distance = models.FloatField()
-    executed_time = models.DurationField()
-    in_zone = models.DurationField()
-    average_heart_rate = models.IntegerField()
+    # TODO add a date column and add the logic that is the date is not provided,
+    # we will use the default date now() (fat models and thin views)
+    distance = models.FloatField(verbose_name = "Distance: ")
+    executed_time = models.DurationField(verbose_name = "Executed time: ", help_text = "HH:MM:SS")
+    in_zone = models.DurationField(verbose_name = "In zone: ", help_text = "HH:MM:SS")
+    average_heart_rate = models.IntegerField(verbose_name = "Average heart rate: ")
 
     @property
     def executed_time_(self) :

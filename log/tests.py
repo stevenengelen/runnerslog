@@ -44,80 +44,71 @@ class HomepageTest(TestCase) :
         self.assertEqual(found.func, home_page)
 
 class TrainingDataModelTest(TestCase) :
-    def test_store_and_retrieve_training_data(self) :
-        distance = 2.3
-        executed_time = '00:12:05'
-        in_zone = '00:10:58'
-        average_heart_rate = 152
-
-        make_and_save_training_object(self, distance, executed_time, in_zone, average_heart_rate)
-        assert_saved_training(self, 1, distance, executed_time, in_zone, average_heart_rate)
+    def setUp(self) :
+        self.distance = 2.3
+        self.executed_time = '00:12:05'
+        self.in_zone = '00:10:58'
+        self.average_heart_rate = 152
         
-        second_training_distance = 12.3
-        second_training_executed_time = '01:12:05'
-        second_training_in_zone = '01:10:58'
-        second_training_average_heart_rate = 148
+        self.second_distance = 12.3
+        self.second_executed_time = '01:12:05'
+        self.second_in_zone = '01:10:58'
+        self.second_average_heart_rate = 148
 
-        make_and_save_training_object(self, second_training_distance, second_training_executed_time, second_training_in_zone, second_training_average_heart_rate)
-        assert_saved_training(self, 2, second_training_distance, second_training_executed_time, second_training_in_zone, second_training_average_heart_rate)
+    def test_store_and_retrieve_training_data(self) :
+        make_and_save_training_object(self, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
+        assert_saved_training(self, 1, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
+
+        make_and_save_training_object(self, self.second_distance, self.second_executed_time, self.second_in_zone, self.second_average_heart_rate)
+        assert_saved_training(self, 2, self.second_distance, self.second_executed_time, self.second_in_zone, self.second_average_heart_rate)
 
 class NewTrainingDataTest(TestCase) :
+    def setUp(self) :
+        self.distance = 2.3
+        self.executed_time = '00:12:05'
+        self.in_zone = '00:10:58'
+        self.average_heart_rate = 152
+        
+        self.second_distance = 12.3
+        self.second_executed_time = '01:12:05'
+        self.second_in_zone = '01:10:58'
+        self.second_average_heart_rate = 148
+
     def test_saves_a_POST_request(self) :
-        distance = 2.3
-        executed_time = '00:12:05'
-        in_zone = '00:10:58'
-        average_heart_rate = 152
-
         self.client.post('/', data = {
-            'item_distance' : distance,
-            'item_executed_time' : executed_time,
-            'item_in_zone' : in_zone,
-            'item_average_heart_rate' : average_heart_rate,
+            'distance' : self.distance,
+            'executed_time' : self.executed_time,
+            'in_zone' : self.in_zone,
+            'average_heart_rate' : self.average_heart_rate,
             })
-
-        assert_saved_training(self, 1, distance, executed_time, in_zone, average_heart_rate)
+        assert_saved_training(self, 1, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
 
     def test_saves_a_second_POST_request(self) :
-        distance = 2.3
-        executed_time = '00:12:05'
-        in_zone = '00:10:58'
-        average_heart_rate = 152
-        
         self.client.post('/', data = {
-            'item_distance' : distance,
-            'item_executed_time' : executed_time,
-            'item_in_zone' : in_zone,
-            'item_average_heart_rate' : average_heart_rate,
+            'distance' : self.distance,
+            'executed_time' : self.executed_time,
+            'in_zone' : self.in_zone,
+            'average_heart_rate' : self.average_heart_rate,
+            })
+        assert_saved_training(self, 1, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
+
+        self.client.post('/', data = {
+            'distance' : self.second_distance,
+            'executed_time' : self.second_executed_time,
+            'in_zone' : self.second_in_zone,
+            'average_heart_rate' : self.second_average_heart_rate,
             })
 
-        assert_saved_training(self, 1, distance, executed_time, in_zone, average_heart_rate)
+        assert_saved_training(self, 2, self.second_distance, self.second_executed_time, self.second_in_zone, self.second_average_heart_rate)
 
-        distance = 12.3
-        executed_time = '01:12:05'
-        in_zone = '01:10:58'
-        average_heart_rate = 142
-        
-        self.client.post('/', data = {
-            'item_distance' : distance,
-            'item_executed_time' : executed_time,
-            'item_in_zone' : in_zone,
-            'item_average_heart_rate' : average_heart_rate,
-            })
-
-        assert_saved_training(self, 2, distance, executed_time, in_zone, average_heart_rate)
 
     def test_reads_from_database_when_opening_home_page(self) :
         # first we save some data using a POST
-        distance = 2.3
-        executed_time = '00:12:05'
-        in_zone = '00:10:58'
-        average_heart_rate = 152
-        
         self.client.post('/', data = {
-            'item_distance' : distance,
-            'item_executed_time' : executed_time,
-            'item_in_zone' : in_zone,
-            'item_average_heart_rate' : average_heart_rate,
+            'distance' : self.distance,
+            'executed_time' : self.executed_time,
+            'in_zone' : self.in_zone,
+            'average_heart_rate' : self.average_heart_rate,
             })
 
         # next we launch a new http request and check if the data saved is in the response

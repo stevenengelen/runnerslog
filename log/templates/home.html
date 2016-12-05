@@ -1,18 +1,23 @@
+<!--What are the mandatory fields n the form?-->
+<!--Action should be more precise than just home page | script on its own-->
+
 <html>
     <head>
         <title>Runners Log</title>
+        <link rel = "stylesheet" type = "text/css" rel = "stylesheet" href = "./log.templates/home.css">
     </head>
     <body>
         <h1>Enter a new training</h1>
         <form method = "POST" action = "/">
-            <input id = "submit" type = "submit" value = "submit">
-            <input name = "item_distance" id = "id_new_distance" placeholder = "Distance" />
-            <input name = "item_executed_time" id = "id_new_executed_time" placeholder = "Executed Time" />
-            <input name = "item_in_zone" id = "id_new_in_zone" placeholder = "In Zone" />
-            <input name = "item_average_heart_rate" id = "id_new_average_heart_rate" placeholder = "Average Heart Rate" />
+                distance<input type = "text" name = "distance" placeholder = "Distance">
+                executed time<input type = "text" name = "executed_time" placeholder = "Executed Time">
+                in zone<input type = "text" name = "in_zone" placeholder = "In Zone">
+                average heart rate<input type = "text" name = "average_heart_rate" placeholder = "Average Heart Rate">
+                <input type = "submit" id = "submit_button" value = "submit"> <!--id is added for selenium-->
+                <!--the id = "submit_button" is funny shit : if we use "submit" then this will override the selenium submit() function-->
             {% csrf_token %}
         </form>
-        <table id = "id_training_table">
+        <table>
             {% for training in training_log %}
             <tr>
                 <td>{{ training.distance }}</td>
