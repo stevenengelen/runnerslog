@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset = "utf-8">
+        <link type = "text/css" rel = "stylesheet" href = "home.css">
+    </head>
+    <body>
+        <h1>Runners log - Variable that displays the training target name</h1>
+        <form action = "submittraining.html" method = "POST">
+            <h2>Enter a new training</h2>
+
+            <div id = "table_add_data">
+
+                <div id = "table_first_row_add_data">
+                    <div class = "label">
+                        Date
+                    </div>
+                    <div class = "input">
+                        <input type = "date" placeholder = "dd/mm/yy">
+                    </div>
+                    <div class = "label">
+                        Distance
+                    </div>
+                    <div class = "input">
+                        <input type = "text" placeholder = "km">
+                    </div>
+                    <div class = "label">
+                        Average HR
+                    </div>
+                    <div class = "input">
+                        <input type = "text" placeholder = "bpm">
+                    </div>
+                </div>
+
+                
+                <div id = "table_second_row_add_data">
+                    <div class = "label">
+                        Planned type of training
+                    </div>
+                    <div class = "input">
+                        <input type = "text">
+                    </div>
+                    <div class = "label">
+                        Executed time
+                    </div>
+                    <div class = "input">
+                        <input type = "text" placeholder = "hh:mm:ss">
+                    </div>
+                    <div class = "label">
+                        In zone
+                    </div>
+                    <div class = "input">
+                        <input type = "text" placeholder = "hh:mm:ss">
+                    </div>
+                </div>
+
+
+                <div id = "table_third_row_add_data">
+                    <div class = "label">
+                        Planned duration
+                    </div>
+                    <div class = "input">
+                        <input type = "text" placeholder = "hh:mm">
+                    </div>
+                    <div class = "label">
+                    </div>
+                    <div class = "input">
+                    </div>
+                    <div class = "label">
+                    </div>
+                    <div class = "input">
+                    </div>
+                </div>
+                <p><input type = "submit" value = "Save"></p>
+            </div>
+        </form>
+            <h2>Training history</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Planned type of training</th>
+                <th>Planned duration</th>
+                <th>Distance</th>
+                <th>Executed time</th>
+                <th>Average HR</th>
+                <th>In zone</th>
+                <th>Average speed</th>
+                <th>Calories</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td>27/12/2016</td>
+                <td>Aerobic - Zone 2</td>
+                <td>2:00</td>
+                <td>21 km</td>
+                <td>1:57:26</td>
+                <td>153 bpm</td>
+                <td>1:26:45</td>
+                <td>10.7 km/h</td>
+                <td>1406 kcal</td>
+                <td>Slight aching left knee</td>
+            </tr>
+        </table>
+    </body>
+</html>

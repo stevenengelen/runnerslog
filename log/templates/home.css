@@ -1,0 +1,33 @@
+#table_add_data {
+    display : table;
+    border-spacing : 0px;
+}
+
+#table_first_row_add_data, #table_second_row_add_data, #table_third_row_add_data {
+    display : table-row;
+}
+
+.label {
+    display : table-cell;
+    padding-right : 10px;
+}
+
+.input {
+    display : table-cell;
+    padding-right : 30px;
+    padding-bottom : 10px;
+}
+
+table {
+    border : thin solid black;
+    border-collapse : collapse;
+}
+
+th, td {
+    border : thin solid black;
+    padding : 10px;
+}
+
+th {
+    background : silver;
+}
