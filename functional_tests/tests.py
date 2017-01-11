@@ -1,11 +1,11 @@
-from selenium.webdriver import Firefox
+from selenium.webdriver import Chrome
 from django.test import LiveServerTestCase
 from selenium.webdriver.common.keys import Keys
 
 class NewTrainingData(LiveServerTestCase) :
     def setUp(self) :
         # TODO setup lists with test data here, and make the 2 methods user_sees and check_entered accept these lists
-        self.browser = Firefox()
+        self.browser = Chrome()
         self.browser.implicitly_wait(3)
 
     def tearDown(self) :
@@ -29,7 +29,7 @@ class NewTrainingData(LiveServerTestCase) :
 
         # user sees a submit button with the text 'submit' on it
         submit_button = self.browser.find_element_by_id('submit_button')
-        self.assertEqual(submit_button.get_attribute('value'), 'submit')
+        self.assertEqual(submit_button.get_attribute('value'), 'Save')
 
         # user enters data in the 4 fields an presses submit
         # TODO : user sees he gets redirected to the same home url
@@ -49,10 +49,15 @@ class NewTrainingData(LiveServerTestCase) :
             self.browser.implicitly_wait(3)
             table_rows = self.browser.find_elements_by_tag_name('tr')
 
-        # user checks if the number of rows entered equals the number of rows displayed in the table
+        # the header row is static, it is of no use to us, so we delete it
+        del table_rows[0]
         self.assertEqual(len(table_rows), len(data), 'not all data records are in the DB')
+        counter = 0
         for table_row in table_rows :
-            self.assertIn(table_row.text, data, 'runners record wrong data or not in DB')
+            elements = data[counter].split(' ')
+            counter += 1
+            for element in elements :
+                self.assertTrue(element in table_row.text, element + ' not in ' + table_row.text)
 
     def test_enter_training_data(self) :
         # user gets the url
@@ -79,3 +84,20 @@ class NewTrainingData(LiveServerTestCase) :
         self.browser.get(self.live_server_url)
         # user sees the title in the browser window
         self.assertIn('Runners Log', self.browser.title)
+
+    def test_css_is_used(self) :
+        # The "add training" part of the website is put in a table layout, 3 x 3. The "Distance" label needs to have
+        # a different x location than the "Date" label. The "Date" label is in column 1, the "Distance" label is in
+        # column 2. If the css should not be used, these labels would have the same x location, thus failing the
+        # test.
+        self.browser.get(self.live_server_url)
+
+        labels = self.browser.find_elements_by_class_name('label')
+        
+        for label in labels :
+            if label.text == 'Distance' :
+                distance_x = label.location['x']
+            if label.text == 'Date' :
+                date_x = label.location['x']
+
+        self.assertNotEqual(date_x, distance_x, 'label \'Date\' and label \'Distance\' have the same x-coordinate - CSS possibly not loaded')

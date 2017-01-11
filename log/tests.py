@@ -116,9 +116,9 @@ class NewTrainingDataTest(TestCase) :
         response = home_page(request)
         response_text = response.content.decode('ascii')
 
-        # find the occurences of <td>, divide them by 4 to get the number of rows, and that must be equal to the number of Training.objects.all()
+        # find the occurences of <tr>, substract 1 from the <th> row, and that must be equal to the number of Training.objects.all()
         number_of_saved_trainings = Training.objects.all().count()
-        number_of_rows_in_table = response_text.count('<td>') / 4
+        number_of_rows_in_table = response_text.count('<tr>') - 1
 
         self.assertEqual(number_of_saved_trainings, 1)
         self.assertEqual(number_of_rows_in_table, 1)
