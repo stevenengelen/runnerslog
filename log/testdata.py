@@ -1,0 +1,2 @@
+FIRST_TRAINING_SESSION = { 'date' : '07/02/2017', 'distance' : '15', 'average_heart_rate' : '149', 'planned_type_of_training' : 'Zone 2', 'executed_time' : '1:32:15', 'in_zone' : '1:18:27', 'planned_duration' : '2:00', }
+SECOND_TRAINING_SESSION = { 'date' : '03/02/2017', 'distance' : '9.9', 'average_heart_rate' : '172', 'planned_type_of_training' : 'Interval', 'executed_time' : '52:45', 'in_zone' : '7:24', 'planned_duration' : '45' }

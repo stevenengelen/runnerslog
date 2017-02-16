@@ -1,83 +1,105 @@
 from selenium.webdriver import Chrome
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.keys import Keys
+import log.testdata
 
-class NewTrainingData(LiveServerTestCase) :
+class NewTrainingData(StaticLiveServerTestCase) :
     def setUp(self) :
-        # TODO setup lists with test data here, and make the 2 methods user_sees and check_entered accept these lists
         self.browser = Chrome()
         self.browser.implicitly_wait(3)
 
     def tearDown(self) :
         self.browser.quit()
 
-    def user_sees_inputfields_and_enters_data(self, distance, executed_time, in_zone, average_heart_rate) :
-        # user sees 4 edit boxes to enter distance, executed time, in zone and average HR 
+    def user_sees_inputfields_and_enters_data(self, data) :
+        '''checks if inputfields are there and enters data in them - data is a dictionary,
+        keys are the same as the names used in the html form'''
+
+        # user sees that the page is divided in 2 parts, a part for input of a 
+        # training session, and a part that displays previous inputted sessions in a
+        # table.
+
+        # in the input part, user sees:
+
+        # a date edit box
+        date_editbox = self.browser.find_element_by_name('date')
+        self.assertIsNotNone(date_editbox)
+
+        # a distance edit box
         distance_editbox = self.browser.find_element_by_name('distance')
         self.assertIsNotNone(distance_editbox)
         
-        executed_time_editbox = self.browser.find_element_by_name('executed_time')
-        self.assertIsNotNone(executed_time_editbox)
-
-        in_zone_editbox = self.browser.find_element_by_name('in_zone')
-        self.assertIsNotNone(in_zone_editbox)
-
+        # an average HR edit box
         average_heart_rate_editbox = self.browser.find_element_by_name('average_heart_rate')
         self.assertIsNotNone(average_heart_rate_editbox)
 
-        # TODO: user sees km, bpm, .... next to the edit boxes
+        # a planned type of training edit box
+        planned_type_of_training_editbox = self.browser.find_element_by_name('planned_type_of_training')
+        self.assertIsNotNone(planned_type_of_training_editbox)
 
-        # user sees a submit button with the text 'submit' on it
+        # an executed time edit box
+        executed_time_editbox = self.browser.find_element_by_name('executed_time')
+        self.assertIsNotNone(executed_time_editbox)
+
+        # an in zone edit box
+        in_zone_editbox = self.browser.find_element_by_name('in_zone')
+        self.assertIsNotNone(in_zone_editbox)
+
+        # a planned duration edit box
+        planned_duration_editbox = self.browser.find_element_by_name('planned_duration')
+        self.assertIsNotNone(planned_duration_editbox)
+
+        # user sees a submit button with the text 'Save' on it
         submit_button = self.browser.find_element_by_id('submit_button')
         self.assertEqual(submit_button.get_attribute('value'), 'Save')
 
         # user enters data in the 4 fields an presses submit
         # TODO : user sees he gets redirected to the same home url
-        distance_editbox.send_keys(distance)
-        executed_time_editbox.send_keys(executed_time)
-        in_zone_editbox.send_keys(in_zone)
-        average_heart_rate_editbox.send_keys(average_heart_rate)
+        date_editbox.send_keys(data['date'])
+        distance_editbox.send_keys(data['distance'])
+        average_heart_rate_editbox.send_keys(data['average_heart_rate'])
+        planned_type_of_training_editbox.send_keys(data['planned_type_of_training'])
+        executed_time_editbox.send_keys(data['executed_time'])
+        in_zone_editbox.send_keys(data['in_zone'])
+        planned_duration_editbox.send_keys(data['planned_duration'])
+
         submit_button.submit()
         
        
-    def check_entered_data_on_screen(self, data) :
-        # user sees a table and an entry in a table on the page with the entered data 
-        try :
-            table_rows = self.browser.find_elements_by_tag_name('tr')
-        except StaleElementReferenceException :
-            # wait for all the elements to be attached to the DOM (stale exception selenium)
-            self.browser.implicitly_wait(3)
-            table_rows = self.browser.find_elements_by_tag_name('tr')
-
+    def check_entered_row_of_data_on_screen(self, row_to_check, data) :
+        ''' checks one training session  of data entered - data is a dictionary with keys same as names used in the html form.
+            the row to check is 1-based, the array of rows is 0 based. but this is not a problem, since the table_row[0] is the header row,
+            and we are not going to check that one. '''
+        table_rows = self.browser.find_elements_by_tag_name('tr')
         # the header row is static, it is of no use to us, so we delete it
-        del table_rows[0]
-        self.assertEqual(len(table_rows), len(data), 'not all data records are in the DB')
-        counter = 0
-        for table_row in table_rows :
-            elements = data[counter].split(' ')
-            counter += 1
-            for element in elements :
-                self.assertTrue(element in table_row.text, element + ' not in ' + table_row.text)
+        # del table_rows[0]
+        data_elements = data.values()
+        # for table_row in table_rows :
+        self.assertGreater(len(table_rows), row_to_check, 'table only has ' + str(len(table_rows)) + ' rows and you wanted to check row ' + str(row_to_check))
+        for element in data_elements :
+            self.assertTrue(element in table_rows[row_to_check].text, element + ' not in ' + table_rows[row_to_check].text)
 
     def test_enter_training_data(self) :
         # user gets the url
         self.browser.get(self.live_server_url)
         # user enters a first set of data and checks if the data is receptioned by the system
-        self.user_sees_inputfields_and_enters_data('9', '00:46:48', '00:38:42', '162')
+        self.user_sees_inputfields_and_enters_data(log.testdata.FIRST_TRAINING_SESSION)
         # user sees the row in the table on the page matching the data entered
-        self.check_entered_data_on_screen(['9.0 0:46:48 0:38:42 162'])
+        self.check_entered_row_of_data_on_screen(1, log.testdata.FIRST_TRAINING_SESSION)
         
         # user enters a second set of data checks if the data is receptioned by the system
-        self.user_sees_inputfields_and_enters_data('14.182', '01:08:53', '00:52:23', '159')
+        self.user_sees_inputfields_and_enters_data(log.testdata.SECOND_TRAINING_SESSION)
         # user sees both rows in the table on the page matching the data from the second training session
-        self.check_entered_data_on_screen(['9.0 0:46:48 0:38:42 162', '14.182 1:08:53 0:52:23 159'])
+        self.check_entered_row_of_data_on_screen(1, log.testdata.FIRST_TRAINING_SESSION)
+        self.check_entered_row_of_data_on_screen(2, log.testdata.SECOND_TRAINING_SESSION)
         
         # user closes the browser and reopens, to see his previously entered data
         self.tearDown()
         self.setUp()
         # user gets the url
         self.browser.get(self.live_server_url)
-        self.check_entered_data_on_screen(['9.0 0:46:48 0:38:42 162', '14.182 1:08:53 0:52:23 159'])
+        self.check_entered_row_of_data_on_screen(1, log.testdata.FIRST_TRAINING_SESSION)
+        self.check_entered_row_of_data_on_screen(2, log.testdata.SECOND_TRAINING_SESSION)
 
     def test_web_page_is_loaded(self) :
         # user gets the url
@@ -86,6 +108,8 @@ class NewTrainingData(LiveServerTestCase) :
         self.assertIn('Runners Log', self.browser.title)
 
     def test_css_is_used(self) :
+        # user sees the table layout of the input elements
+
         # The "add training" part of the website is put in a table layout, 3 x 3. The "Distance" label needs to have
         # a different x location than the "Date" label. The "Date" label is in column 1, the "Distance" label is in
         # column 2. If the css should not be used, these labels would have the same x location, thus failing the

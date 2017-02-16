@@ -5,28 +5,48 @@ from .views import home_page
 from .models import Training
 from django.core.urlresolvers import resolve
 from datetime import timedelta
+from datetime import datetime
+import log.testdata
 
 
-def make_and_save_training_object(self, distance, executed_time, in_zone, average_heart_rate) :
+def make_and_save_training_object(self, data) :
+    ''' data is a dictionary with the values of a training session '''
     training = Training()
-    training.distance = distance
-    training.executed_time_ = executed_time
-    training.in_zone_ = in_zone
-    training.average_heart_rate = average_heart_rate
+    training.date_ = data['date']
+    training.distance = data['distance']
+    training.average_heart_rate = data['average_heart_rate']
+    training.planned_type_of_training = data['planned_type_of_training']
+    training.executed_time_ = data['executed_time']
+    training.in_zone_ = data['in_zone']
+    training.planned_duration_ = data['planned_duration']
     training.save()
 
     return training
 
-def assert_saved_training(self, number_of_objects, distance, executed_time, in_zone, average_heart_rate) :
+def assert_saved_training(self, number_of_objects, data) :
+    ''' checks if training session has been saved - data is a dictionary conatining the session to compare to '''
     saved_training = Training.objects.all()
 
-    (hours_et, minutes_et, seconds_et) = executed_time.split(':')
-    (hours_iz, minutes_iz, seconds_iz) = in_zone.split(':')
+    # padding up, so we hve a hh:mm:yy:ss format
+    while data['executed_time'].count(':') < 2 :
+        data['executed_time'] = '00:' + data['executed_time']
+    (hours_et, minutes_et, seconds_et) = data['executed_time'].split(':')
+    # padding up, so we hve a hh:mm:yy:ss format
+    while data['in_zone'].count(':') < 2 :
+        data['in_zone'] = '00:' + data['in_zone']
+    (hours_iz, minutes_iz, seconds_iz) = data['in_zone'].split(':')
+    (day, month, year) = data['date'].split('/')
+    
     training = Training.objects.filter(
-            distance = distance, 
+            date = datetime(int(year), int(month), int(day)),
+            distance = data['distance'], 
+            average_heart_rate = data['average_heart_rate'],
+            planned_type_of_training = data['planned_type_of_training'],
             executed_time = timedelta(hours = int(hours_et), minutes = int(minutes_et), seconds = int(seconds_et)),
             in_zone = timedelta(hours = int(hours_iz), minutes = int(minutes_iz), seconds = int(seconds_iz)),
-            average_heart_rate = average_heart_rate)
+            planned_duration = data['planned_duration']
+            )
+            
     self.assertEqual(saved_training.count(), number_of_objects)
     self.assertIsNotNone(training)
 
@@ -44,72 +64,29 @@ class HomepageTest(TestCase) :
         self.assertEqual(found.func, home_page)
 
 class TrainingDataModelTest(TestCase) :
-    def setUp(self) :
-        self.distance = 2.3
-        self.executed_time = '00:12:05'
-        self.in_zone = '00:10:58'
-        self.average_heart_rate = 152
-        
-        self.second_distance = 12.3
-        self.second_executed_time = '01:12:05'
-        self.second_in_zone = '01:10:58'
-        self.second_average_heart_rate = 148
-
     def test_store_and_retrieve_training_data(self) :
-        make_and_save_training_object(self, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
-        assert_saved_training(self, 1, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
+        make_and_save_training_object(self, log.testdata.FIRST_TRAINING_SESSION)
+        assert_saved_training(self, 1, log.testdata.FIRST_TRAINING_SESSION)
 
-        make_and_save_training_object(self, self.second_distance, self.second_executed_time, self.second_in_zone, self.second_average_heart_rate)
-        assert_saved_training(self, 2, self.second_distance, self.second_executed_time, self.second_in_zone, self.second_average_heart_rate)
+        make_and_save_training_object(self, log.testdata.SECOND_TRAINING_SESSION)
+        assert_saved_training(self, 2, log.testdata.SECOND_TRAINING_SESSION)
 
 class NewTrainingDataTest(TestCase) :
-    def setUp(self) :
-        self.distance = 2.3
-        self.executed_time = '00:12:05'
-        self.in_zone = '00:10:58'
-        self.average_heart_rate = 152
-        
-        self.second_distance = 12.3
-        self.second_executed_time = '01:12:05'
-        self.second_in_zone = '01:10:58'
-        self.second_average_heart_rate = 148
-
     def test_saves_a_POST_request(self) :
-        self.client.post('/', data = {
-            'distance' : self.distance,
-            'executed_time' : self.executed_time,
-            'in_zone' : self.in_zone,
-            'average_heart_rate' : self.average_heart_rate,
-            })
-        assert_saved_training(self, 1, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
+        self.client.post('/', log.testdata.FIRST_TRAINING_SESSION)
+        assert_saved_training(self, 1, log.testdata.FIRST_TRAINING_SESSION)
 
     def test_saves_a_second_POST_request(self) :
-        self.client.post('/', data = {
-            'distance' : self.distance,
-            'executed_time' : self.executed_time,
-            'in_zone' : self.in_zone,
-            'average_heart_rate' : self.average_heart_rate,
-            })
-        assert_saved_training(self, 1, self.distance, self.executed_time, self.in_zone, self.average_heart_rate)
+        self.client.post('/', log.testdata.FIRST_TRAINING_SESSION)
+        assert_saved_training(self, 1, log.testdata.FIRST_TRAINING_SESSION)
 
-        self.client.post('/', data = {
-            'distance' : self.second_distance,
-            'executed_time' : self.second_executed_time,
-            'in_zone' : self.second_in_zone,
-            'average_heart_rate' : self.second_average_heart_rate,
-            })
-
-        assert_saved_training(self, 2, self.second_distance, self.second_executed_time, self.second_in_zone, self.second_average_heart_rate)
-
+        self.client.post('/', log.testdata.SECOND_TRAINING_SESSION)
+        assert_saved_training(self, 2, log.testdata.FIRST_TRAINING_SESSION)
+        assert_saved_training(self, 2, log.testdata.SECOND_TRAINING_SESSION)
 
     def test_reads_from_database_when_opening_home_page(self) :
         # first we save some data using a POST
-        self.client.post('/', data = {
-            'distance' : self.distance,
-            'executed_time' : self.executed_time,
-            'in_zone' : self.in_zone,
-            'average_heart_rate' : self.average_heart_rate,
-            })
+        self.client.post('/', log.testdata.FIRST_TRAINING_SESSION)
 
         # next we launch a new http request and check if the data saved is in the response
         request = HttpRequest()
@@ -122,3 +99,8 @@ class NewTrainingDataTest(TestCase) :
 
         self.assertEqual(number_of_saved_trainings, 1)
         self.assertEqual(number_of_rows_in_table, 1)
+
+        # check if the data is present
+        data = log.testdata.FIRST_TRAINING_SESSION.values()
+        for element in data :
+            self.assertTrue(element in response_text, element + ' not in rendered html ')

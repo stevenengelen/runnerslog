@@ -9,12 +9,15 @@ from .models import Training
 def home_page(request) :
     if request.method == 'POST' :
         training = Training()
+        training.date_ = request.POST['date']
         training.distance = request.POST['distance']
         training.executed_time_ = request.POST['executed_time']
         training.in_zone_ = request.POST['in_zone']
         training.average_heart_rate = request.POST['average_heart_rate']
+        training.planned_duration_ = request.POST['planned_duration']
+        training.planned_type_of_training = request.POST['planned_type_of_training']
         training.save()
-        
+    
     training = Training.objects.all()
     # TODO: why do we give the request to the render?
     return render(request, 'home.html', { 'training_log' : training} )

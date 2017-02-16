@@ -2,8 +2,8 @@
 <html>
     <head>
         <meta charset = "utf-8">
-        <link type = "text/css" rel = "stylesheet" href = "log/static/css/home.css">
         <title>Runners Log</title>
+        <link type = "text/css" rel = "stylesheet" href = "/static/css/home.css">
     </head>
     <body>
         <h1>Runners log - Variable that displays the training target name</h1>
@@ -17,7 +17,7 @@
                         Date
                     </div>
                     <div class = "input">
-                        <input type = "date" placeholder = "dd/mm/yy">
+                        <input type = "date" name = "date" placeholder = "dd/mm/yy">
                     </div>
                     <div class = "label">
                         Distance
@@ -39,7 +39,7 @@
                         Planned type of training
                     </div>
                     <div class = "input">
-                        <input type = "text">
+                        <input type = "text" name = "planned_type_of_training">
                     </div>
                     <div class = "label">
                         Executed time
@@ -61,7 +61,7 @@
                         Planned duration
                     </div>
                     <div class = "input">
-                        <input type = "text" placeholder = "hh:mm">
+                        <input type = "text" name = "planned_duration" placeholder = "hh:mm">
                     </div>
                     <div class = "label">
                     </div>
@@ -93,9 +93,9 @@
             </tr>
             {% for training in training_log %}
             <tr>
-                <td>27/12/2016</td>
-                <td>Aerobic - Zone 2</td>
-                <td>2:00</td>
+								<td>{{ training.date_ }}</td>
+								<td>{{ training.planned_type_of_training }}</td>
+								<td>{{ training.planned_duration }}</td>
                 <td>{{ training.distance }}</td>
                 <td>{{ training.executed_time }}</td>
                 <td>{{ training.average_heart_rate }}</td>
