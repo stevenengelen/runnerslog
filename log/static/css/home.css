@@ -1,4 +1,4 @@
-#table_add_data {
+#table_add_data, #table_notes {
     display : table;
     border-spacing : 0px;
 }
@@ -30,4 +30,9 @@ th, td {
 
 th {
     background : silver;
+}
+
+.label_notes {
+	vertical-align : top;
+	margin-right : 150px;
 }

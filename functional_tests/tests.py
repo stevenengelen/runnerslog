@@ -2,6 +2,7 @@ from selenium.webdriver import Chrome
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.keys import Keys
 import log.testdata
+from selenium.common.exceptions import NoSuchElementException
 
 class NewTrainingData(StaticLiveServerTestCase) :
     def setUp(self) :
@@ -49,6 +50,10 @@ class NewTrainingData(StaticLiveServerTestCase) :
         planned_duration_editbox = self.browser.find_element_by_name('planned_duration')
         self.assertIsNotNone(planned_duration_editbox)
 
+        # a notes textarea
+        notes_textarea = self.browser.find_element_by_name('notes')
+        self.assertIsNotNone(notes_textarea)
+
         # user sees a submit button with the text 'Save' on it
         submit_button = self.browser.find_element_by_id('submit_button')
         self.assertEqual(submit_button.get_attribute('value'), 'Save')
@@ -62,6 +67,7 @@ class NewTrainingData(StaticLiveServerTestCase) :
         executed_time_editbox.send_keys(data['executed_time'])
         in_zone_editbox.send_keys(data['in_zone'])
         planned_duration_editbox.send_keys(data['planned_duration'])
+        notes_textarea.send_keys(data['notes'])
 
         submit_button.submit()
         

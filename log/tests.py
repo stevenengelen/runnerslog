@@ -8,7 +8,6 @@ from datetime import timedelta
 from datetime import datetime
 import log.testdata
 
-
 def make_and_save_training_object(self, data) :
     ''' data is a dictionary with the values of a training session '''
     training = Training()
@@ -19,6 +18,7 @@ def make_and_save_training_object(self, data) :
     training.executed_time_ = data['executed_time']
     training.in_zone_ = data['in_zone']
     training.planned_duration_ = data['planned_duration']
+    training.notes = data['notes']
     training.save()
 
     return training
@@ -44,7 +44,8 @@ def assert_saved_training(self, number_of_objects, data) :
             planned_type_of_training = data['planned_type_of_training'],
             executed_time = timedelta(hours = int(hours_et), minutes = int(minutes_et), seconds = int(seconds_et)),
             in_zone = timedelta(hours = int(hours_iz), minutes = int(minutes_iz), seconds = int(seconds_iz)),
-            planned_duration = data['planned_duration']
+            planned_duration = data['planned_duration'],
+            notes = data['notes']
             )
             
     self.assertEqual(saved_training.count(), number_of_objects)

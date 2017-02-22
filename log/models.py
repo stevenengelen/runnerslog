@@ -14,11 +14,22 @@ class Training(models.Model) :
     planned_duration = models.DurationField(verbose_name = "Planned duration: ", help_text ="HH:MM", null = True)
     # TODO this should be some sort of enum
     planned_type_of_training = models.CharField(max_length = 20, verbose_name = "Planned type of training: ", null = True)
+    notes = models.CharField(max_length = 70, verbose_name = "Notes: ", null = True)
 
     @property
     def date_(self) :
-        # return self.date
-        return self.date_to_string()
+        year = str(self.date.year)
+        month = str(self.date.month)
+        day = str(self.date.day)
+
+        # make sure we have the right format dd/mm/yyyy
+        if len(year) == 2 :
+            year = '20' + year
+        if len(month) == 1 :
+            month = '0' + month
+        if len(day) == 1 :
+            day = '0' + day
+        return day + '/' + month + '/' + year
 
     @property
     def executed_time_(self) :
@@ -63,17 +74,3 @@ class Training(models.Model) :
             value = '00:' + value
         [h, m] = value.split(':')
         self.planned_duration =  timedelta(hours = int(h), minutes = int(m))
-
-    def date_to_string(self) :
-        year = str(self.date.year)
-        month = str(self.date.month)
-        day = str(self.date.day)
-
-        # make sure we have the right format dd/mm/yyyy
-        if len(year) == 2 :
-            year = '20' + year
-        if len(month) == 1 :
-            month = '0' + month
-        if len(day) == 1 :
-            day = '0' + day
-        return day + '/' + month + '/' + year

@@ -16,6 +16,7 @@ def home_page(request) :
         training.average_heart_rate = request.POST['average_heart_rate']
         training.planned_duration_ = request.POST['planned_duration']
         training.planned_type_of_training = request.POST['planned_type_of_training']
+        training.notes = request.POST['notes']
         training.save()
     
     training = Training.objects.all()

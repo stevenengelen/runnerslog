@@ -46,7 +46,7 @@
                     </div>
                     <div class = "input">
                         <input type = "text" name = "executed_time" placeholder = "hh:mm:ss">
-                    </div>
+										</div>
                     <div class = "label">
                         In zone
                     </div>
@@ -57,27 +57,24 @@
 
 
                 <div id = "table_third_row_add_data">
-                    <div class = "label">
-                        Planned duration
-                    </div>
-                    <div class = "input">
-                        <input type = "text" name = "planned_duration" placeholder = "hh:mm">
-                    </div>
-                    <div class = "label">
-                    </div>
-                    <div class = "input">
-                    </div>
-                    <div class = "label">
-                    </div>
-                    <div class = "input">
-                    </div>
-                </div>
-                <p><input type = "submit" id = "submit_button" value = "Save"></p>
-                <!--the id = "submit_button" is funny shit : if we use "submit" then this will override the selenium submit() function-->
-            </div>
-            {% csrf_token %}
-        </form>
-            <h2>Training history</h2>
+								  <div class = "label">
+										Planned duration
+									</div>
+									<div class = "input">
+											<input type = "text" name = "planned_duration" placeholder = "hh:mm">
+									</div>
+								</div>
+							</div>
+
+						<p>
+							Notes<br>
+							<textarea name = "notes" rows = 5 cols = 61></textarea>
+						</p>
+						<p><input type = "submit" id = "submit_button" value = "Save"></p>
+						<!--the id = "submit_button" is funny shit : if we use "submit" then this will override the selenium submit() function-->
+						{% csrf_token %}
+					</form>
+				<h2>Training history</h2>
         <table>
             <tr>
                 <th>Date</th>
@@ -102,7 +99,7 @@
                 <td>{{ training.in_zone }}</td>
                 <td>10.7 km/h</td>
                 <td>1406 kcal</td>
-                <td>Slight aching left knee</td>
+								<td>{{ training.notes }}</td>
             </tr>
             {% endfor %}
         </table>
