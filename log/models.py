@@ -2,6 +2,17 @@ from django.db import models
 from datetime import timedelta
 from datetime import datetime
 
+class TrainingType(models.Model) :
+    zone = models.IntegerField(verbose_name = 'Zone: ', help_text = '1', unique = True)
+    upper_heart_rate = models.IntegerField(verbose_name = 'Upper heart rate: ', help_text = '145', null = True)
+    lower_heart_rate = models.IntegerField(verbose_name = 'Lower heart rate: ', help_text = '155', null = True)
+    description = models.CharField(null = True, verbose_name = 'Description: ', max_length = 255)
+
+    @property
+    def full_type_as_string(self) :
+        ''' return a string with the full description of the training type e.g. Zone 1: 145 - 155 HR '''
+        return 'Zone ' + str(self.zone) + ': ' + str(self.lower_heart_rate) + ' - ' + str(self.upper_heart_rate)
+
 # Create your models here.
 class Training(models.Model) :
     # TODO add a date column and add the logic that is the date is not provided,
@@ -13,7 +24,7 @@ class Training(models.Model) :
     average_heart_rate = models.IntegerField(verbose_name = "Average heart rate: ")
     planned_duration = models.DurationField(verbose_name = "Planned duration: ", help_text ="HH:MM", null = True)
     # TODO this should be some sort of enum
-    planned_type_of_training = models.CharField(max_length = 20, verbose_name = "Planned type of training: ", null = True)
+    planned_type_of_training = models.ForeignKey(TrainingType, null = True)
     notes = models.CharField(max_length = 70, verbose_name = "Notes: ", null = True)
 
     @property
@@ -42,6 +53,10 @@ class Training(models.Model) :
     @property
     def planned_duration_(self) :
         return self.planned_duration
+
+    @property
+    def planned_type_of_training_(self) :
+        return self.planned_type_of_training.full_type_as_string
 
     @date_.setter
     def date_(self, value) :
@@ -74,3 +89,9 @@ class Training(models.Model) :
             value = '00:' + value
         [h, m] = value.split(':')
         self.planned_duration =  timedelta(hours = int(h), minutes = int(m))
+
+    @planned_type_of_training_.setter
+    def planned_type_of_training_(self, value) :
+        training_type = TrainingType.objects.filter(zone = value)
+        # if not training typ is empty
+        self.planned_type_of_training = training_type[0]

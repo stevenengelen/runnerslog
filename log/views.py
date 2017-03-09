@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Training
+from .models import TrainingType
 
 # Create your views here.
 
@@ -15,10 +16,12 @@ def home_page(request) :
         training.in_zone_ = request.POST['in_zone']
         training.average_heart_rate = request.POST['average_heart_rate']
         training.planned_duration_ = request.POST['planned_duration']
-        training.planned_type_of_training = request.POST['planned_type_of_training']
+        training.planned_type_of_training_ = request.POST['planned_type_of_training']
         training.notes = request.POST['notes']
         training.save()
     
     training = Training.objects.all()
+    training_types = TrainingType.objects.all()
     # TODO: why do we give the request to the render?
-    return render(request, 'home.html', { 'training_log' : training} )
+    return render(request, 'home.html', { 'training_log' : training,
+                                          'training_types' : training_types } )

@@ -39,7 +39,12 @@
                         Planned type of training
                     </div>
                     <div class = "input">
-                        <input type = "text" name = "planned_type_of_training">
+											<select name = "planned_type_of_training">
+												{% for training_type in training_types %}
+												<option value = {{ training_type.zone }} >{{ training_type.full_type_as_string }}</option>
+												{% endfor %}
+											</select>
+											<!--<input type = "text" name = "planned_type_of_training">-->
                     </div>
                     <div class = "label">
                         Executed time
@@ -91,7 +96,7 @@
             {% for training in training_log %}
             <tr>
 								<td>{{ training.date_ }}</td>
-								<td>{{ training.planned_type_of_training }}</td>
+								<td>{{ training.planned_type_of_training.full_type_as_string }}</td>
 								<td>{{ training.planned_duration }}</td>
                 <td>{{ training.distance }}</td>
                 <td>{{ training.executed_time }}</td>
