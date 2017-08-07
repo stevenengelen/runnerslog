@@ -9,8 +9,9 @@ class NewTrainingData(StaticLiveServerTestCase) :
     def setUp(self) :
         self.browser = Chrome()
         self.browser.implicitly_wait(3)
-        self.first_training_session = log.testdata.get_first_training_session()
-        self.second_training_session = log.testdata.get_second_training_session()
+
+        self.first_training_session = log.testdata.get_first_training_session_in_text_form()
+        self.second_training_session = log.testdata.get_second_training_session_in_text_form()
 
     def tearDown(self) :
         self.browser.quit()
@@ -67,9 +68,7 @@ class NewTrainingData(StaticLiveServerTestCase) :
         date_editbox.send_keys(data['date'])
         distance_editbox.send_keys(data['distance'])
         average_heart_rate_editbox.send_keys(data['average_heart_rate'])
-        # TODO we shoud do soething about this, I would like to select by text, since that is more correct than by index
-        # planned_type_of_training_select.select_by_visible_text(data['planned_type_of_training'])
-        planned_type_of_training_select.select_by_index(int(data['planned_type_of_training']) - 1)
+        planned_type_of_training_select.select_by_visible_text(data['planned_type_of_training'])
         executed_time_editbox.send_keys(data['executed_time'])
         in_zone_editbox.send_keys(data['in_zone'])
         planned_duration_editbox.send_keys(data['planned_duration'])
@@ -83,13 +82,8 @@ class NewTrainingData(StaticLiveServerTestCase) :
             the row to check is 1-based, the array of rows is 0 based. but this is not a problem, since the table_row[0] is the header row,
             and we are not going to check that one. '''
         table_rows = self.browser.find_elements_by_tag_name('tr')
-        
-        # first we put the string in a local copy of the data dictionary instead of the index, since it is the string that is displayed on the page
-        local_data = data.copy()
-        training_types = TrainingType.objects.filter(zone = data['planned_type_of_training'])
-        local_data['planned_type_of_training'] = training_types[0].full_type_as_string
 
-        data_elements = local_data.values()
+        data_elements = data.values()
 
         # for table_row in table_rows :
         self.assertGreater(len(table_rows), row_to_check, 'table only has ' + str(len(table_rows)) + ' rows and you wanted to check row ' + str(row_to_check))

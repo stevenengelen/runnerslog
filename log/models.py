@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import timedelta
 from datetime import datetime
+# Create your models here.
 
 class TrainingType(models.Model) :
     zone = models.IntegerField(verbose_name = 'Zone: ', help_text = '1', unique = True)
@@ -13,7 +14,6 @@ class TrainingType(models.Model) :
         ''' return a string with the full description of the training type e.g. Zone 1: 145 - 155 HR '''
         return 'Zone ' + str(self.zone) + ': ' + str(self.lower_heart_rate) + ' - ' + str(self.upper_heart_rate)
 
-# Create your models here.
 class Training(models.Model) :
     # TODO add a date column and add the logic that is the date is not provided,
     # we will use the default date now() (fat models and thin views)
@@ -23,7 +23,6 @@ class Training(models.Model) :
     in_zone = models.DurationField(verbose_name = "In zone: ", help_text = "HH:MM:SS")
     average_heart_rate = models.IntegerField(verbose_name = "Average heart rate: ")
     planned_duration = models.DurationField(verbose_name = "Planned duration: ", help_text ="HH:MM", null = True)
-    # TODO this should be some sort of enum
     planned_type_of_training = models.ForeignKey(TrainingType, null = True)
     notes = models.CharField(max_length = 70, verbose_name = "Notes: ", null = True)
 

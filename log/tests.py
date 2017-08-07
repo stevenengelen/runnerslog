@@ -42,7 +42,7 @@ def assert_saved_training(self, number_of_objects, data) :
         data['planned_duration'] = '00:' + data['planned_duration']
     (planned_hours, planned_minutes) = data['planned_duration'].split(':')
     training_types = TrainingType.objects.filter(zone = data['planned_type_of_training'])
-    # TODO if not null training_type_one
+    self.assertIsNotNone(training_types)
     the_planned_type_of_training = training_types[0]
 
     training = Training.objects.filter(
@@ -68,7 +68,13 @@ class HomepageTest(TestCase) :
         response = home_page(request)
         rendered_html = render_to_string('home.html')
         # TODO : get rid of this csrf thing for once and for all!
-        # self.assertEqual(response.content.decode(), rendered_html)
+        print('response')
+        print('-------------------------------------------------')
+        print(response.content.decode())
+        print('renderd_html')
+        print('-------------------------------------------------')
+        print(rendered_html)
+        self.assertEqual(response.content.decode(), rendered_html)
 
     def test_root_url_resolves_to_home_page_view(self) :
         found = resolve('/')
@@ -127,7 +133,7 @@ class NewTrainingDataTest(TestCase) :
         self.assertEqual(number_of_rows_in_table, 1)
 
         # check if the data is present
-        data = self.first_training_session.values()
-        # TODO convert planned_type_of_training to string
+        html_data = log.testdata.get_first_training_session_in_text_form()
+        data = html_data.values()
         for element in data :
             self.assertTrue(str(element) in response_text, str(element) + ' not in rendered html ')
